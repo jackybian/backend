@@ -31,7 +31,7 @@ public class ParamUtil {
     }
 
 
-    public static Map<String, Object> getRequestParam(Map<String, Object> origParam, String userToken) {
+    public static Map<String, Object> getRequestParam(Object origParam, String userToken) {
         String timeStamp = Long.valueOf(System.currentTimeMillis() / 1000).toString();
         Map<String, Object> params = new HashMap<>();
         params.put("data", origParam);
