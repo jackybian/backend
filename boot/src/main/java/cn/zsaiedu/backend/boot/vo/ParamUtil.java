@@ -30,4 +30,16 @@ public class ParamUtil {
         return params;
     }
 
+
+    public static Map<String, Object> getRequestParam(Map<String, Object> origParam, String userToken) {
+        String timeStamp = Long.valueOf(System.currentTimeMillis() / 1000).toString();
+        Map<String, Object> params = new HashMap<>();
+        params.put("data", origParam);
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("ip", IpUtil.getLocalIp());
+        headers.put("timestamp", Long.valueOf(timeStamp).toString());
+        headers.put("userToken", userToken);
+        params.put("headers", headers);
+        return params;
+    }
 }

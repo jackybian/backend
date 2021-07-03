@@ -15,7 +15,7 @@ public class Constants {
 
     public static String QGJY_SERVER_URL_SYNC_ALLOT_EXAM = "http://testapi.qgjy.org.cn/gateway/third/interface/allot/exam";
 
-    public static String QGJY_SERVER_URL_SYNC_EXAM_ADDRESS = "http://testapi.qgjy.org.cn/gateway/third/interface/exam/address";
+    public static String QGJY_SERVER_URL_SYNC_EXAM_ADDRESS = "http://testapi.qgjy.org.cn/gateway/third/interface/query/exam/address";
 
     public static String GET_TOKEN = "get/token";
 
