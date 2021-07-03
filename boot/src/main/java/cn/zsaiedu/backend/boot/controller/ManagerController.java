@@ -1,9 +1,6 @@
 package cn.zsaiedu.backend.boot.controller;
 
-import cn.zsaiedu.backend.boot.bo.AddressBo;
-import cn.zsaiedu.backend.boot.bo.CostQueryDataBo;
-import cn.zsaiedu.backend.boot.bo.CourseProgressBo;
-import cn.zsaiedu.backend.boot.bo.ExamLocationDataBo;
+import cn.zsaiedu.backend.boot.bo.*;
 import cn.zsaiedu.backend.boot.service.ManagerService;
 import cn.zsaiedu.backend.boot.vo.*;
 import io.swagger.annotations.Api;
@@ -19,7 +16,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/manager")
-@Api(tags = "平台管理", hidden = false)
+@Api(tags = "平台管理")
 public class ManagerController {
 
     @Resource
@@ -48,7 +45,7 @@ public class ManagerController {
         return examLocationVo;
     }
 
-    @PostMapping("/exam/location")
+    @PostMapping("/exam/cost")
     @ApiOperation(value = "获取收费信息", notes = "获取收费")
     public ExamCostVo examCost(@Valid @RequestBody CostQueryDataBo costQueryDataBo) {
         //TODO 检查userToken
@@ -69,6 +66,14 @@ public class ManagerController {
     public BasicVo syncProgress(@Valid @RequestBody CourseProgressBo courseProgressBo) {
         //TODO 检查userToken
         BasicVo basicVo = managerService.syncProgress(courseProgressBo.getCourseInfo(), courseProgressBo.getPhone(),courseProgressBo.getApplyProfession(),courseProgressBo.getUserToken());
+        return basicVo;
+    }
+
+    @PostMapping("/sync/user")
+    @ApiOperation(value = "同步用户信息", notes = "同步用户信息")
+    public BasicVo syncUsers(@Valid @RequestBody UserInfoBo userInfoBo) {
+        //TODO 检查userToken
+        BasicVo basicVo = managerService.syncUser(userInfoBo.getUserInfos(), userInfoBo.getUserToken());
         return basicVo;
     }
 

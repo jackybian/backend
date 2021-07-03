@@ -3,6 +3,7 @@ package cn.zsaiedu.backend.boot.service.impl;
 import cn.zsaiedu.backend.boot.bo.Cost;
 import cn.zsaiedu.backend.boot.bo.CourseProgress;
 import cn.zsaiedu.backend.boot.bo.ExamLocation;
+import cn.zsaiedu.backend.boot.bo.UserInfo;
 import cn.zsaiedu.backend.boot.constants.Constants;
 import cn.zsaiedu.backend.boot.service.ManagerService;
 import cn.zsaiedu.backend.boot.util.HttpUtil;
@@ -175,6 +176,42 @@ public class ManagerServiceImpl implements ManagerService {
         requestData.put("courseInfo", courseInfo);
         Map<String, Object> params = ParamUtil.getRequestParam(requestData, userToken);
         String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_PROGRESS , JSON.toJSONString(params));
+        BasicVo basicVo = new BasicVo();
+        if (StringUtils.isEmpty(result)) {
+            basicVo.setStatus(500);
+            basicVo.setErrorMessage("服务器异常");
+        } else {
+            try {
+                JSONObject jsonObject = JSONObject.parseObject(result);
+                String code = jsonObject.getString("code");
+                // 对接文档写的不详细，暂时按照非200，就是全部失败
+                if (!"200".equals(code)) {
+                    basicVo.setStatus(500);
+                    basicVo.setErrorMessage(jsonObject.getString("msg"));
+                } else {
+                    String data = jsonObject.getString("data");
+                    if (StringUtils.isEmpty(data)) {
+                        basicVo.setStatus(500);
+                        basicVo.setErrorMessage("服务器返回数据为空");
+                    } else {
+                        Map<String, Object> jsonData = JSONObject.parseObject(result, Map.class);
+//                        basicVo.setExamCost(jsonData);
+                    }
+                }
+
+            } catch (Exception ex) {
+                basicVo.setStatus(500);
+                basicVo.setErrorMessage("服务器返回数据异常");
+            }
+
+        }
+        return basicVo;
+    }
+
+    @Override
+    public BasicVo syncUser(List<UserInfo> userInfos, String userToken) {
+        Map<String, Object> params = ParamUtil.getRequestParam(userInfos, userToken);
+        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_USER , JSON.toJSONString(params));
         BasicVo basicVo = new BasicVo();
         if (StringUtils.isEmpty(result)) {
             basicVo.setStatus(500);
