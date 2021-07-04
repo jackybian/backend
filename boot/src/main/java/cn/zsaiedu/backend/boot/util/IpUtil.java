@@ -1,4 +1,4 @@
-package cn.zsaiedu.backend.boot.vo;
+package cn.zsaiedu.backend.boot.util;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;

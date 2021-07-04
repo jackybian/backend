@@ -1,6 +1,4 @@
-package cn.zsaiedu.backend.boot.vo;
-
-import cn.zsaiedu.backend.boot.util.SignUtil;
+package cn.zsaiedu.backend.boot.util;
 
 import java.util.HashMap;
 import java.util.Map;

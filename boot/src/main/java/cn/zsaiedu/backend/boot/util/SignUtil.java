@@ -1,8 +1,6 @@
 package cn.zsaiedu.backend.boot.util;
 
 import cn.zsaiedu.backend.boot.constants.Constants;
-import cn.zsaiedu.backend.boot.vo.IpUtil;
-import cn.zsaiedu.backend.boot.vo.ParamUtil;
 import com.alibaba.fastjson.JSON;
 
 import java.security.MessageDigest;
