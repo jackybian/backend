@@ -1,7 +1,9 @@
 package cn.zsaiedu.backend.boot.controller;
 
 import cn.zsaiedu.backend.boot.bo.*;
+import cn.zsaiedu.backend.boot.entity.User;
 import cn.zsaiedu.backend.boot.service.ManagerService;
+import cn.zsaiedu.backend.boot.service.UserService;
 import cn.zsaiedu.backend.boot.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,6 +23,9 @@ public class ManagerController {
 
     @Resource
     private ManagerService managerService;
+
+    @Resource
+    private UserService userService;
 
     @PostMapping("/token")
     @ApiOperation(value = "获取token")
@@ -75,6 +80,19 @@ public class ManagerController {
         //TODO 检查userToken
         BasicVo basicVo = managerService.syncUser(userInfoBo.getUserInfos(), userInfoBo.getUserToken());
         return basicVo;
+    }
+
+    @PostMapping("/user")
+    @ApiOperation(value = "同步用户信息", notes = "同步用户信息")
+    public Object test() {
+        //TODO 检查userToken
+        User user = new User();
+        user.setName("jacky");
+        user.setIdCard("320");
+        user.setPhone("136");
+        user.setSex(1);
+        userService.save(user);
+        return null;
     }
 
 }

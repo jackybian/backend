@@ -1,7 +1,7 @@
 package cn.zsaiedu.backend.boot;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -10,6 +10,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
  */
 @EnableSwagger2
 @SpringBootApplication
+@MapperScan("cn.zsaiedu.backend.boot.mapper")
 public class BackendStarter {
 
     public static void main (String[] args) {
