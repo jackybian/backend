@@ -7,6 +7,8 @@ import cn.zsaiedu.backend.boot.service.UserService;
 import cn.zsaiedu.backend.boot.vo.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,8 @@ import javax.validation.Valid;
 @RequestMapping("/api/manager")
 @Api(tags = "平台管理")
 public class ManagerController {
+
+    private static final Logger logger = LoggerFactory.getLogger(ManagerController.class);
 
     @Resource
     private ManagerService managerService;
