@@ -5,6 +5,7 @@ import cn.zsaiedu.backend.boot.bo.CourseProgress;
 import cn.zsaiedu.backend.boot.bo.ExamLocation;
 import cn.zsaiedu.backend.boot.bo.UserInfoBo;
 import cn.zsaiedu.backend.boot.constants.Constants;
+import cn.zsaiedu.backend.boot.entity.User;
 import cn.zsaiedu.backend.boot.service.ManagerService;
 import cn.zsaiedu.backend.boot.service.UserService;
 import cn.zsaiedu.backend.boot.util.HttpUtil;
@@ -12,16 +13,19 @@ import cn.zsaiedu.backend.boot.util.ParamUtil;
 import cn.zsaiedu.backend.boot.vo.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
 import com.obs.services.ObsClient;
-import com.obs.services.exception.ObsException;
-import com.obs.services.model.*;
+import com.obs.services.model.ObsObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -271,12 +275,19 @@ public class ManagerServiceImpl implements ManagerService {
             return userInfoVo;
         } catch (Exception ex) {
             log.error("save error:", ex);
+            userInfoVo.setStatus(500);
+            userInfoVo.setErrorMessage("数据库插入错误");
         }
 
         if (result > 0 && null != userInfoBo.getId()) {
             userInfoVo.setId(userInfoBo.getId());
         }
         return userInfoVo;
+    }
+
+    @Override
+    public List<User> queryUserByConditions(String idCard, String phone, Page page) {
+        return userService.queryUserByConditions(idCard, phone, page);
     }
 
     public static void main(String[] args) throws IOException {

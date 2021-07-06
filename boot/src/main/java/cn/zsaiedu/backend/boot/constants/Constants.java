@@ -35,4 +35,8 @@ public class Constants {
 
     public static String HUAWEI_OBS_BUCKET = "master-edu";
 
+    public static String SORT_DESCEND = "descend";
+
+    public static String SORT_ASCENT = "ascend";
+
 }

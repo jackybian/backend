@@ -4,7 +4,9 @@ import cn.zsaiedu.backend.boot.bo.Cost;
 import cn.zsaiedu.backend.boot.bo.CourseProgress;
 import cn.zsaiedu.backend.boot.bo.ExamLocation;
 import cn.zsaiedu.backend.boot.bo.UserInfoBo;
+import cn.zsaiedu.backend.boot.entity.User;
 import cn.zsaiedu.backend.boot.vo.*;
+import com.github.pagehelper.Page;
 
 import java.util.List;
 
@@ -24,4 +26,5 @@ public interface ManagerService {
 
     UserInfoVo saveUser(UserInfoBo userInfoBo);
 
+    List<User> queryUserByConditions(String idCard, String phone, Page page);
 }

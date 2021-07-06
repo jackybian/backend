@@ -1,20 +1,21 @@
 package cn.zsaiedu.backend.boot.controller;
 
 import cn.zsaiedu.backend.boot.bo.*;
+import cn.zsaiedu.backend.boot.entity.User;
 import cn.zsaiedu.backend.boot.service.ManagerService;
 import cn.zsaiedu.backend.boot.service.UserService;
 import cn.zsaiedu.backend.boot.vo.*;
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.List;
 
 
 @RestController
@@ -85,12 +86,35 @@ public class ManagerController {
         return basicVo;
     }
 
-    @PostMapping("/save/user")
+    @PostMapping("/user/save")
     @ApiOperation(value = "保存用户信息", notes = "保存用户信息")
     public UserInfoVo saveUsers(@Valid @RequestBody UserInfoBo userInfoBo) {
         //TODO 检查userToken
         UserInfoVo userInfoVo = managerService.saveUser(userInfoBo);
         return userInfoVo;
+    }
+
+    @PostMapping("/user/query")
+    @ApiOperation(value = "查询用户信息", notes = "查询用户信息")
+    public UserQueryPageVo queryUsers(@RequestBody(required = false) UserQueryBo userQueryBo) {
+        //TODO 检查userToken
+        if (null == userQueryBo) {
+            userQueryBo = new UserQueryBo();
+        }
+        Page page = PageHelper.startPage(userQueryBo.getPageNum().intValue(), userQueryBo.getPageSize().intValue());
+        List<User> userList = managerService.queryUserByConditions(userQueryBo.getIdCard(),
+                userQueryBo.getPhone(), page);
+        UserQueryPageVo userQueryPageVo = new UserQueryPageVo(page, userList);
+        return userQueryPageVo;
+    }
+
+    @PostMapping("/user/delete/{id}")
+    @ApiOperation(value = "查询用户信息", notes = "查询用户信息")
+    public BasicVo deleteUser(@PathVariable("id") Long id ) {
+        //TODO 检查userToken
+        int result = userService.deleteUserById(id);
+        BasicVo basicVo = new BasicVo();
+        return basicVo;
     }
 
 }
