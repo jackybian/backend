@@ -1,14 +1,12 @@
 package cn.zsaiedu.backend.boot.service.impl;
 
-import cn.zsaiedu.backend.boot.bo.Cost;
-import cn.zsaiedu.backend.boot.bo.CourseProgress;
-import cn.zsaiedu.backend.boot.bo.ExamLocation;
-import cn.zsaiedu.backend.boot.bo.UserInfoBo;
+import cn.zsaiedu.backend.boot.bo.*;
 import cn.zsaiedu.backend.boot.constants.Constants;
 import cn.zsaiedu.backend.boot.entity.User;
 import cn.zsaiedu.backend.boot.service.ManagerService;
 import cn.zsaiedu.backend.boot.service.UserService;
 import cn.zsaiedu.backend.boot.util.HttpUtil;
+import cn.zsaiedu.backend.boot.util.MapUtil;
 import cn.zsaiedu.backend.boot.util.ParamUtil;
 import cn.zsaiedu.backend.boot.vo.*;
 import com.alibaba.fastjson.JSON;
@@ -227,10 +225,26 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public BasicVo syncUser(List<UserInfoBo> userInfos, String userToken) {
-        Map<String, Object> params = ParamUtil.getRequestParam(userInfos, userToken);
-        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_USER, JSON.toJSONString(params));
+    public BasicVo syncUser(SyncBo syncBo) {
         BasicVo basicVo = new BasicVo();
+        User user = userService.queryUserById(syncBo.getId());
+        if (null ==  user) {
+            basicVo.setStatus(500);
+            basicVo.setErrorMessage("id对应的记录不存在");
+            return basicVo;
+        }
+        Map<String, Object> param = null;
+        try {
+            param = MapUtil.objectToMap(user);
+        } catch (Exception ex) {
+            basicVo.setStatus(500);
+            basicVo.setErrorMessage("id对应的记录不存在");
+            return basicVo;
+        }
+
+        Map<String, Object> params = ParamUtil.getRequestParam(param, syncBo.getUserToken());
+        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_USER, JSON.toJSONString(params));
+
         if (StringUtils.isEmpty(result)) {
             basicVo.setStatus(500);
             basicVo.setErrorMessage("服务器异常");

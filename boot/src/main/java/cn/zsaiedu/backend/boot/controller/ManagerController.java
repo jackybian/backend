@@ -78,13 +78,6 @@ public class ManagerController {
         return basicVo;
     }
 
-    @PostMapping("/sync/user")
-    @ApiOperation(value = "同步用户信息", notes = "同步用户信息")
-    public BasicVo syncUsers(@Valid @RequestBody UserInfoBo1 userInfoBo) {
-        //TODO 检查userToken
-        BasicVo basicVo = managerService.syncUser(userInfoBo.getUserInfos(), userInfoBo.getUserToken());
-        return basicVo;
-    }
 
     @PostMapping("/user/save")
     @ApiOperation(value = "保存用户信息", notes = "保存用户信息")
@@ -92,6 +85,14 @@ public class ManagerController {
         //TODO 检查userToken
         UserInfoVo userInfoVo = managerService.saveUser(userInfoBo);
         return userInfoVo;
+    }
+
+    @PostMapping("/user/sync")
+    @ApiOperation(value = "同步用户信息", notes = "同步用户信息")
+    public BasicVo syncUsers(@Valid @RequestBody SyncBo syncBo) {
+        //TODO 检查userToken
+        BasicVo basicVo = managerService.syncUser(syncBo);
+        return basicVo;
     }
 
     @PostMapping("/user/query")

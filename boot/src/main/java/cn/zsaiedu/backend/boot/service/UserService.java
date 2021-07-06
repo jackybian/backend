@@ -15,4 +15,6 @@ public interface UserService {
     int deleteUserById(Long id);
 
     int updateUserById(User user);
+
+    User queryUserById(Long id);
 }

@@ -1,9 +1,6 @@
 package cn.zsaiedu.backend.boot.service;
 
-import cn.zsaiedu.backend.boot.bo.Cost;
-import cn.zsaiedu.backend.boot.bo.CourseProgress;
-import cn.zsaiedu.backend.boot.bo.ExamLocation;
-import cn.zsaiedu.backend.boot.bo.UserInfoBo;
+import cn.zsaiedu.backend.boot.bo.*;
 import cn.zsaiedu.backend.boot.entity.User;
 import cn.zsaiedu.backend.boot.vo.*;
 import com.github.pagehelper.Page;
@@ -22,7 +19,7 @@ public interface ManagerService {
 
     BasicVo syncProgress(List<CourseProgress> courseInfo, String phone, String applyProfession, String userToken );
 
-    BasicVo syncUser(List<UserInfoBo> userInfos, String userToken);
+    BasicVo syncUser(SyncBo syncBo);
 
     UserInfoVo saveUser(UserInfoBo userInfoBo);
 
