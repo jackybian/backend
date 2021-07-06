@@ -1,14 +1,9 @@
 package cn.zsaiedu.backend.boot.bo;
 
+import cn.zsaiedu.backend.boot.entity.User;
 import lombok.Data;
 
-import java.util.List;
-
 @Data
-public class UserInfoBo {
-
-    private List<UserInfo> userInfos;
-
-    private String userToken;
+public class UserInfoBo extends User {
 
 }

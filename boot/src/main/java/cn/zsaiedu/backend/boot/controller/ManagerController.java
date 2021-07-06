@@ -1,7 +1,6 @@
 package cn.zsaiedu.backend.boot.controller;
 
 import cn.zsaiedu.backend.boot.bo.*;
-import cn.zsaiedu.backend.boot.entity.User;
 import cn.zsaiedu.backend.boot.service.ManagerService;
 import cn.zsaiedu.backend.boot.service.UserService;
 import cn.zsaiedu.backend.boot.vo.*;
@@ -80,23 +79,18 @@ public class ManagerController {
 
     @PostMapping("/sync/user")
     @ApiOperation(value = "同步用户信息", notes = "同步用户信息")
-    public BasicVo syncUsers(@Valid @RequestBody UserInfoBo userInfoBo) {
+    public BasicVo syncUsers(@Valid @RequestBody UserInfoBo1 userInfoBo) {
         //TODO 检查userToken
         BasicVo basicVo = managerService.syncUser(userInfoBo.getUserInfos(), userInfoBo.getUserToken());
         return basicVo;
     }
 
-    @PostMapping("/user")
-    @ApiOperation(value = "同步用户信息", notes = "同步用户信息")
-    public Object test() {
+    @PostMapping("/save/user")
+    @ApiOperation(value = "保存用户信息", notes = "保存用户信息")
+    public UserInfoVo saveUsers(@Valid @RequestBody UserInfoBo userInfoBo) {
         //TODO 检查userToken
-        User user = new User();
-        user.setName("jacky");
-        user.setIdCard("320");
-        user.setPhone("136");
-        user.setSex(1);
-        userService.save(user);
-        return null;
+        UserInfoVo userInfoVo = managerService.saveUser(userInfoBo);
+        return userInfoVo;
     }
 
 }

@@ -3,9 +3,10 @@ package cn.zsaiedu.backend.boot.service.impl;
 import cn.zsaiedu.backend.boot.bo.Cost;
 import cn.zsaiedu.backend.boot.bo.CourseProgress;
 import cn.zsaiedu.backend.boot.bo.ExamLocation;
-import cn.zsaiedu.backend.boot.bo.UserInfo;
+import cn.zsaiedu.backend.boot.bo.UserInfoBo;
 import cn.zsaiedu.backend.boot.constants.Constants;
 import cn.zsaiedu.backend.boot.service.ManagerService;
+import cn.zsaiedu.backend.boot.service.UserService;
 import cn.zsaiedu.backend.boot.util.HttpUtil;
 import cn.zsaiedu.backend.boot.util.ParamUtil;
 import cn.zsaiedu.backend.boot.vo.*;
@@ -14,6 +15,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,10 @@ import static cn.zsaiedu.backend.boot.constants.Constants.APP_SECRET;
 
 @Service
 public class ManagerServiceImpl implements ManagerService {
+
+    @Resource
+    private UserService userService;
+
     @Override
     public TokenVo getToken() {
         Map<String, Object> params = ParamUtil.getRequestParam(new HashMap<String, Object>(), APP_ID, APP_SECRET);
@@ -210,7 +216,7 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public BasicVo syncUser(List<UserInfo> userInfos, String userToken) {
+    public BasicVo syncUser(List<UserInfoBo> userInfos, String userToken) {
         Map<String, Object> params = ParamUtil.getRequestParam(userInfos, userToken);
         String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_USER , JSON.toJSONString(params));
         BasicVo basicVo = new BasicVo();
@@ -243,6 +249,17 @@ public class ManagerServiceImpl implements ManagerService {
 
         }
         return basicVo;
+    }
+
+    @Override
+    public UserInfoVo saveUser(UserInfoBo userInfoBo) {
+        // 目前只保存一条用户记录
+        long result = userService.save(userInfoBo);
+        UserInfoVo userInfoVo = new UserInfoVo();
+        if (result > 0 && null != userInfoBo.getId()) {
+            userInfoVo.setId(userInfoBo.getId());
+        }
+        return userInfoVo;
     }
 
 

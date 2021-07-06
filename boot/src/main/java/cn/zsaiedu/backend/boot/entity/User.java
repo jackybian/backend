@@ -13,6 +13,24 @@ public class User {
 
     private String idCard;
 
+    private String idCardImg;
+
     private String phone;
+
+    private Integer age;
+
+    private Integer standardCulture;
+
+    private String province;
+
+    private String city;
+
+    private String area;
+
+    private String address;
+
+    private Integer studentType;
+
+    private String applyProfession;
 
 }
