@@ -13,4 +13,6 @@ public interface UserService {
     List<User> queryUserByConditions(String idCard, String phone, Page page);
 
     int deleteUserById(Long id);
+
+    int updateUserById(User user);
 }

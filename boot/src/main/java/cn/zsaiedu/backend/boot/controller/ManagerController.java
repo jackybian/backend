@@ -109,10 +109,19 @@ public class ManagerController {
     }
 
     @PostMapping("/user/delete/{id}")
-    @ApiOperation(value = "查询用户信息", notes = "查询用户信息")
+    @ApiOperation(value = "删除用户信息", notes = "删除用户信息")
     public BasicVo deleteUser(@PathVariable("id") Long id ) {
         //TODO 检查userToken
         int result = userService.deleteUserById(id);
+        BasicVo basicVo = new BasicVo();
+        return basicVo;
+    }
+
+    @PostMapping("/user/update")
+    @ApiOperation(value = "更新用户信息", notes = "更新用户信息")
+    public BasicVo updateUser(@Valid @RequestBody UserInfoBo userInfoBo ) {
+        //TODO 检查userToken
+        int result = userService.updateUserById(userInfoBo);
         BasicVo basicVo = new BasicVo();
         return basicVo;
     }

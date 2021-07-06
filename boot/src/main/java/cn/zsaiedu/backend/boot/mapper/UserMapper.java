@@ -37,4 +37,26 @@ public interface UserMapper {
 
     @Delete("delete from user where id = #{id}")
     int deleteUserById(@Param("id") Long id);
+
+    @Update("<script>" +
+            "update user " +
+            "<set> " +
+            "<if test = \"name != null and name != ''\">  `name` = #{name},</if>" +
+            "<if test = \"sex != null\">  `sex` = #{sex},</if>" +
+            "<if test = \"idCard != null and idCard != ''\">  `id_card` = #{idCard},</if>" +
+            "<if test = \"phone != null and phone != ''\">  `phone` = #{phone},</if>" +
+            "<if test = \"idCardImg != null and idCardImg != ''\">  `id_card_img` = #{idCardImg},</if>" +
+            "<if test = \"age != null\">  `age` = #{age},</if>" +
+            "<if test = \"standardCulture != null\">  `standard_culture` = #{standardCulture},</if>" +
+            "<if test = \"province != null and province != ''\">  `province` = #{province},</if>" +
+            "<if test = \"city != null and city != ''\">  `city` = #{city},</if>" +
+            "<if test = \"area != null and area != ''\">  `area` = #{area},</if>" +
+            "<if test = \"address != null and address != ''\">  `address` = #{address},</if>" +
+            "<if test = \"studentType != null\">  `student_type` = #{studentType},</if>" +
+            "<if test = \"applyProfession != null and applyProfession != ''\">  `apply_profession` = #{applyProfession},</if>" +
+            "</set>" +
+            " where id=#{id}" +
+            "</script>"
+    )
+    int updateUserById(User user);
 }
