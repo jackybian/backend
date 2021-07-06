@@ -5,6 +5,6 @@ import cn.zsaiedu.backend.boot.entity.User;
 public interface UserService {
 
 
-    long save(User user);
+    long save(User user) throws Exception;
 
 }

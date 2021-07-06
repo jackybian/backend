@@ -14,7 +14,7 @@ public class UserServiceImpl implements UserService {
     UserMapper userMapper;
 
     @Override
-    public long save(User user) {
+    public long save(User user) throws Exception{
         int result = userMapper.save(user);
         if (result > 0 ) {
             return user.getId();

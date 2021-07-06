@@ -12,10 +12,16 @@ import cn.zsaiedu.backend.boot.util.ParamUtil;
 import cn.zsaiedu.backend.boot.vo.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.obs.services.ObsClient;
+import com.obs.services.exception.ObsException;
+import com.obs.services.model.*;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +29,7 @@ import java.util.Map;
 import static cn.zsaiedu.backend.boot.constants.Constants.APP_ID;
 import static cn.zsaiedu.backend.boot.constants.Constants.APP_SECRET;
 
+@Slf4j
 @Service
 public class ManagerServiceImpl implements ManagerService {
 
@@ -32,7 +39,7 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public TokenVo getToken() {
         Map<String, Object> params = ParamUtil.getRequestParam(new HashMap<String, Object>(), APP_ID, APP_SECRET);
-        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_TOKEN , JSON.toJSONString(params));
+        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_TOKEN, JSON.toJSONString(params));
 
         TokenVo tokenVo = new TokenVo();
         if (StringUtils.isEmpty(result)) {
@@ -65,7 +72,7 @@ public class ManagerServiceImpl implements ManagerService {
         requestData.put("phone", phone);
         requestData.put("applyProfession", applyProfession);
         Map<String, Object> params = ParamUtil.getRequestParam(requestData, userToken);
-        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_EXAM_ADDRESS , JSON.toJSONString(params));
+        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_EXAM_ADDRESS, JSON.toJSONString(params));
         AddressVo addressVo = new AddressVo();
         if (StringUtils.isEmpty(result)) {
             addressVo.setStatus(500);
@@ -103,7 +110,7 @@ public class ManagerServiceImpl implements ManagerService {
     public ExamLocationVo getLocation(List<ExamLocation> examLocationList, String userToken) {
 
         Map<String, Object> params = ParamUtil.getRequestParam(examLocationList, userToken);
-        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_ALLOT_EXAM , JSON.toJSONString(params));
+        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_ALLOT_EXAM, JSON.toJSONString(params));
         ExamLocationVo examLocationVo = new ExamLocationVo();
         if (StringUtils.isEmpty(result)) {
             examLocationVo.setStatus(500);
@@ -142,7 +149,7 @@ public class ManagerServiceImpl implements ManagerService {
         requestData.put("applyProfession", applyProfession);
         requestData.put("student", costList);
         Map<String, Object> params = ParamUtil.getRequestParam(requestData, userToken);
-        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_COST , JSON.toJSONString(params));
+        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_COST, JSON.toJSONString(params));
         ExamCostVo examCostVo = new ExamCostVo();
         if (StringUtils.isEmpty(result)) {
             examCostVo.setStatus(500);
@@ -182,7 +189,7 @@ public class ManagerServiceImpl implements ManagerService {
         requestData.put("phone", phone);
         requestData.put("courseInfo", courseInfo);
         Map<String, Object> params = ParamUtil.getRequestParam(requestData, userToken);
-        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_PROGRESS , JSON.toJSONString(params));
+        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_PROGRESS, JSON.toJSONString(params));
         BasicVo basicVo = new BasicVo();
         if (StringUtils.isEmpty(result)) {
             basicVo.setStatus(500);
@@ -218,7 +225,7 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public BasicVo syncUser(List<UserInfoBo> userInfos, String userToken) {
         Map<String, Object> params = ParamUtil.getRequestParam(userInfos, userToken);
-        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_USER , JSON.toJSONString(params));
+        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_USER, JSON.toJSONString(params));
         BasicVo basicVo = new BasicVo();
         if (StringUtils.isEmpty(result)) {
             basicVo.setStatus(500);
@@ -254,12 +261,69 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public UserInfoVo saveUser(UserInfoBo userInfoBo) {
         // 目前只保存一条用户记录
-        long result = userService.save(userInfoBo);
         UserInfoVo userInfoVo = new UserInfoVo();
+        long result = 0;
+        try {
+            result = userService.save(userInfoBo);
+        } catch (DuplicateKeyException ex) {
+            userInfoVo.setStatus(500);
+            userInfoVo.setErrorMessage("手机号或者身份证号已经存在");
+            return userInfoVo;
+        } catch (Exception ex) {
+            log.error("save error:", ex);
+        }
+
         if (result > 0 && null != userInfoBo.getId()) {
             userInfoVo.setId(userInfoBo.getId());
         }
         return userInfoVo;
+    }
+
+    public static void main(String[] args) throws IOException {
+        // 需要将endPoint/ak/sk更新为实际信息
+        String endPoint = "obs.cn-east-3.myhuaweicloud.com";
+        String ak = "FQJH6MC0ZVOPP62JELKN";
+        String sk = "v5DQAXZgqdrks7vXYIvYXRfB0Cmhmc0BZHPHI1iv";
+        String bucketName = "master-edu";                // 需要将bucketName更新为实际信息
+        // 创建ObsClient实例
+        ObsClient obsClient = new ObsClient(ak, sk, endPoint);
+//        ObjectMetadata meta = new ObjectMetadata();
+//        try {
+//            InputStream is = new BufferedInputStream(
+//                    new FileInputStream("D:/midway.jpg"));
+//            obsClient.putObject(bucketName, "midway3", is);
+//        } catch (Exception ex) {
+//            System.out.println("end");
+//        }
+
+        ObsObject obsObject = obsClient.getObject(bucketName, "midway3");
+        InputStream content = obsObject.getObjectContent();
+        File file = new File("D:/midway_copy1.jpg");
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        StringBuffer stringBuffer = new StringBuffer();
+        if (content != null)
+        {
+
+
+            while (true)
+            {
+                byte[] buf=new byte[1024];
+                int len=0;
+                while((len=content.read(buf))!=-1){   //将byte数据读到最多buf长度的buf数组中
+                    fileOutputStream.write(buf,0,len);         //将buf中 从0-len长度的数据写到文件中
+                }
+            }
+//            reader.close();
+        }
+
+//        PrintStream ps = new PrintStream(file);
+//        ps.append(stringBuffer.toString());
+//        ps.flush();
+        obsClient.close();
+
+
+
+
     }
 
 

@@ -27,4 +27,12 @@ public class Constants {
 
     public static String APP_SECRET = "a2b5615959ec449187ea3ee0ed4f2df9";
 
+    public static String HUAWEI_OBS_ENDPOINT = "obs.cn-east-3.myhuaweicloud.com";
+
+    public static String HUAWEI_OBS_AK= "FQJH6MC0ZVOPP62JELKN";
+
+    public static String HUAWEI_OBS_SK = "v5DQAXZgqdrks7vXYIvYXRfB0Cmhmc0BZHPHI1iv";
+
+    public static String HUAWEI_OBS_BUCKET = "master-edu";
+
 }
