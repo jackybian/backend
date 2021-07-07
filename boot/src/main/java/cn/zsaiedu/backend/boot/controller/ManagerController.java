@@ -4,6 +4,7 @@ import cn.zsaiedu.backend.boot.bo.*;
 import cn.zsaiedu.backend.boot.entity.User;
 import cn.zsaiedu.backend.boot.service.ManagerService;
 import cn.zsaiedu.backend.boot.service.UserService;
+import cn.zsaiedu.backend.boot.util.HuaweiUtil;
 import cn.zsaiedu.backend.boot.vo.*;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
@@ -12,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
@@ -124,6 +126,22 @@ public class ManagerController {
         //TODO 检查userToken
         int result = userService.updateUserById(userInfoBo);
         BasicVo basicVo = new BasicVo();
+        return basicVo;
+    }
+
+    @PostMapping("/user/upload/idcard")
+    @ApiOperation(value = "用户上传身份证", notes = "用户上传身份证")
+    public BasicVo uploadIdCard(@RequestParam MultipartFile file,  @RequestParam String fileName) {
+        //TODO 检查userToken
+        boolean result = HuaweiUtil.upload2Obs(file, fileName);
+        BasicVo basicVo = new BasicVo();
+        if (!result) {
+            basicVo.setStatus(500);
+            basicVo.setErrorMessage("上传图片失败");
+            basicVo.setMessage("fail");
+        } else {
+            basicVo.setMessage("success");
+        }
         return basicVo;
     }
 
