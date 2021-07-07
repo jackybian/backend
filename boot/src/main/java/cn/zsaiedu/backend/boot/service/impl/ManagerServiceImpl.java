@@ -13,15 +13,17 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
 import com.obs.services.ObsClient;
+import com.obs.services.model.ObjectMetadata;
 import com.obs.services.model.ObsObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import sun.misc.BASE64Encoder;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.FileOutputStream;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -312,38 +314,53 @@ public class ManagerServiceImpl implements ManagerService {
         String bucketName = "master-edu";                // 需要将bucketName更新为实际信息
         // 创建ObsClient实例
         ObsClient obsClient = new ObsClient(ak, sk, endPoint);
-//        ObjectMetadata meta = new ObjectMetadata();
-//        try {
-//            InputStream is = new BufferedInputStream(
-//                    new FileInputStream("D:/midway.jpg"));
-//            obsClient.putObject(bucketName, "midway3", is);
-//        } catch (Exception ex) {
-//            System.out.println("end");
-//        }
-
-        ObsObject obsObject = obsClient.getObject(bucketName, "midway3");
-        InputStream content = obsObject.getObjectContent();
-        File file = new File("D:/midway_copy1.jpg");
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-        StringBuffer stringBuffer = new StringBuffer();
-        if (content != null)
-        {
-
-
-            while (true)
-            {
-                byte[] buf=new byte[1024];
-                int len=0;
-                while((len=content.read(buf))!=-1){   //将byte数据读到最多buf长度的buf数组中
-                    fileOutputStream.write(buf,0,len);         //将buf中 从0-len长度的数据写到文件中
-                }
-            }
-//            reader.close();
+        ObjectMetadata meta = new ObjectMetadata();
+        try {
+            InputStream is = new BufferedInputStream(
+                    new FileInputStream("E:/desktop.jpg"));
+            obsClient.putObject(bucketName, "desktop", is);
+        } catch (Exception ex) {
+            System.out.println("end");
         }
+
+        ObsObject obsObject = obsClient.getObject(bucketName, "desktop");
+        InputStream content = obsObject.getObjectContent();
+        byte[] data = null;
+        try {
+            int count = 0;
+            while (0 == count) {
+                count = content.available();
+            }
+            data = new byte[content.available()];
+            content.read(data);
+        } catch (Exception ex) {
+
+        }
+        BASE64Encoder encoder = new BASE64Encoder();
+        System.out.println(encoder.encode(data));
+//        File file = new File("D:/midway_copy2.jpg");
+//        FileOutputStream fileOutputStream = new FileOutputStream(file);
+//        StringBuffer stringBuffer = new StringBuffer();
+//        if (content != null)
+//        {
+//
+//
+//            while (true)
+//            {
+//                byte[] buf=new byte[1024];
+//                int len=0;
+//                while((len=content.read(buf))!=-1){   //将byte数据读到最多buf长度的buf数组中
+//                    fileOutputStream.write(buf,0,len);         //将buf中 从0-len长度的数据写到文件中
+//                }
+//            }
+////            reader.close();
+//        }
 
 //        PrintStream ps = new PrintStream(file);
 //        ps.append(stringBuffer.toString());
 //        ps.flush();
+        content.close();
+
         obsClient.close();
 
 
