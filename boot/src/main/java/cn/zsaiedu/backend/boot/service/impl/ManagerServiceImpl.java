@@ -5,9 +5,7 @@ import cn.zsaiedu.backend.boot.constants.Constants;
 import cn.zsaiedu.backend.boot.entity.User;
 import cn.zsaiedu.backend.boot.service.ManagerService;
 import cn.zsaiedu.backend.boot.service.UserService;
-import cn.zsaiedu.backend.boot.util.HttpUtil;
-import cn.zsaiedu.backend.boot.util.MapUtil;
-import cn.zsaiedu.backend.boot.util.ParamUtil;
+import cn.zsaiedu.backend.boot.util.*;
 import cn.zsaiedu.backend.boot.vo.*;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -18,9 +16,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static cn.zsaiedu.backend.boot.constants.Constants.APP_ID;
 import static cn.zsaiedu.backend.boot.constants.Constants.APP_SECRET;
@@ -228,15 +224,22 @@ public class ManagerServiceImpl implements ManagerService {
             return basicVo;
         }
         Map<String, Object> param = null;
+        List<Map<String, Object>> paramList = new ArrayList<>();
         try {
             param = MapUtil.objectToMap(user);
+            byte[] bytes = HuaweiUtil.downloadObs(user.getIdcardImg());
+            String baseData = Base64Util.getBase64Code(bytes);
+            StringBuilder sb = new StringBuilder();
+            sb.append("data:image/jpg;base64,").append(baseData);
+            param.put("idcardImg", sb.toString());
+            paramList.add(param);
         } catch (Exception ex) {
             basicVo.setStatus(500);
             basicVo.setErrorMessage("id对应的记录不存在");
             return basicVo;
         }
 
-        Map<String, Object> params = ParamUtil.getRequestParam(param, syncBo.getUserToken());
+        Map<String, Object> params = ParamUtil.getRequestParam(paramList, syncBo.getUserToken());
         String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_USER, JSON.toJSONString(params));
 
         if (StringUtils.isEmpty(result)) {

@@ -11,9 +11,9 @@ public class User {
 
     private Integer sex;
 
-    private String idCard;
+    private String idcard;
 
-    private String idCardImg;
+    private String idcardImg;
 
     private String phone;
 
