@@ -9,6 +9,12 @@ spring:
     username: root
     password: jackybian
 
+  redis:
+    host: 47.100.119.175
+    port: 8083
+    timeout: 300000
+    password:
+
 mybatis:
   #开启驼峰命名
   configuration:
