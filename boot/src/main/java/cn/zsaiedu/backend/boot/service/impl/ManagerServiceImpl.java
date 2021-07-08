@@ -300,4 +300,20 @@ public class ManagerServiceImpl implements ManagerService {
     public List<User> queryUserByConditions(String idCard, String phone, Page page) {
         return userService.queryUserByConditions(idCard, phone, page);
     }
+
+    @Override
+    public String getTokenByInternal() {
+        String token = null;
+        Map<String, Object> params = ParamUtil.getRequestParam(new HashMap<String, Object>(), APP_ID, APP_SECRET);
+        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_TOKEN, JSON.toJSONString(params));
+        try {
+            JSONObject jsonObject = JSONObject.parseObject(result);
+            token = jsonObject.getString("data");
+        } catch (Exception ex) {
+            log.error("服务器获取token异常");
+        }
+        return token;
+    }
+
+
 }

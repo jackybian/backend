@@ -15,7 +15,7 @@ public class ParamUtil {
         param.put("appId", appId);
         param.put("timeStamp", timeStamp);
         param.put("appSecret", appSecret);
-        String sign = SignUtil.createSign(param);
+        String sign = SignUtil.createSign(param, "appSecret");
         param.put("sign", sign);
 
         Map<String, Object> params = new HashMap<>();

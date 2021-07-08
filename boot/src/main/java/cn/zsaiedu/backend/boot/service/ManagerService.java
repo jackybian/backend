@@ -24,4 +24,6 @@ public interface ManagerService {
     UserInfoVo saveUser(UserInfoBo userInfoBo);
 
     List<User> queryUserByConditions(String idCard, String phone, Page page);
+
+    String getTokenByInternal();
 }

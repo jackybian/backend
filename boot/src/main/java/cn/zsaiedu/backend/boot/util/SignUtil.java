@@ -2,6 +2,7 @@ package cn.zsaiedu.backend.boot.util;
 
 import cn.zsaiedu.backend.boot.constants.Constants;
 import com.alibaba.fastjson.JSON;
+import lombok.extern.slf4j.Slf4j;
 
 import java.security.MessageDigest;
 import java.util.*;
@@ -12,7 +13,10 @@ import static cn.zsaiedu.backend.boot.constants.Constants.APP_SECRET;
 /**
  * @author jackybian
  */
+@Slf4j
 public class SignUtil {
+
+
 
     /**
      * 微信支付签名算法sign
@@ -20,7 +24,7 @@ public class SignUtil {
      * @param parameters
      * @return
      */
-    public static String createSign(SortedMap<String, Object> parameters) {
+    public static String createSign(SortedMap<String, Object> parameters, String keyName) {
         StringBuffer sb = new StringBuffer();
         Set es = parameters.entrySet();//所有参与传参的参数按照accsii排序（升序）
         Iterator it = es.iterator();
@@ -29,12 +33,13 @@ public class SignUtil {
             String k = (String) entry.getKey();
             Object v = entry.getValue();
             if (null != v && !"".equals(v)
-                    && !"sign".equals(k) && !"appSecret".equals(k)) {
+                    && !"sign".equals(k) && !keyName.equals(k)) {
                 sb.append(k + "=" + v + "&");
             }
         }
 
-        sb.append("appSecret=").append(parameters.get("appSecret")); //这里是商户那里设置的key);
+        sb.append(keyName).append("=").append(parameters.get(keyName)); //这里是商户那里设置的key);
+        log.info("params=> {}", sb.toString());
         String sign = md5Password(sb.toString()).toUpperCase();
         return sign;
     }
@@ -73,9 +78,20 @@ public class SignUtil {
     }
 
     public static void main(String[] args) {
-        Map<String, Object> params = ParamUtil.getRequestParam(new HashMap<String, Object>(), APP_ID, APP_SECRET);
-        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_TOKEN , JSON.toJSONString(params));
-        System.out.println(result);
+//        Map<String, Object> params = ParamUtil.getRequestParam(new HashMap<String, Object>(), APP_ID, APP_SECRET);
+//        String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_TOKEN , JSON.toJSONString(params));
+//        System.out.println(result);
+        Map<String, Object> map = new HashMap<>();
+        map.put("a1", "123");
+        map.put("a2", "567");
+        map.put("c3","ddd");
+        map.put("c4","bomb");
+        map.put("d5", null);
+        map.put("e6","");
+        map.put("token", "123333");
+        SortedMap<String, Object> parameters = new TreeMap<>();
+        parameters.putAll(map);
+        System.out.println(createSign(parameters, "token"));
     }
 
 }
