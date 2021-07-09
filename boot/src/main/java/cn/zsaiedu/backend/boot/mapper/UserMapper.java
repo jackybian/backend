@@ -13,7 +13,7 @@ public interface UserMapper {
     @Insert("insert into user(`name`,`sex`,`id_card`,`phone`,`id_card_img`," +
             "`age`,`standard_culture`,`province`,`city`,`area`," +
             "`address`,`student_type`,`apply_profession`) " +
-            "values (#{name},#{sex},#{idCard},#{phone},#{idCardImg}," +
+            "values (#{name},#{sex},#{idcard},#{phone},#{idcardImg}," +
             "#{age},#{standardCulture},#{province},#{city},#{area}," +
             "#{address},#{studentType},#{applyProfession})")
     int save(User user);

@@ -7,6 +7,4 @@ public class SyncBo {
 
     private Long id;
 
-    private String userToken;
-
 }

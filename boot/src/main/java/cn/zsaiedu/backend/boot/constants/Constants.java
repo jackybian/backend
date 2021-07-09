@@ -11,7 +11,7 @@ public class Constants {
 
     public static String QGJY_SERVER_URL_SYNC_PROGRESS = "http://testapi.qgjy.org.cn/gateway/third/interface/synchronization/progress";
 
-    public static String QGJY_SERVER_URL_SYNC_COST = "http://testapi.qgjy.org.cn/gateway/third/interface/synchronization/cost";
+    public static String QGJY_SERVER_URL_SYNC_COST = "http://testapi.qgjy.org.cn/gateway/third/interface/cost";
 
     public static String QGJY_SERVER_URL_SYNC_ALLOT_EXAM = "http://testapi.qgjy.org.cn/gateway/third/interface/allot/exam";
 
@@ -38,5 +38,7 @@ public class Constants {
     public static String SORT_DESCEND = "descend";
 
     public static String SORT_ASCENT = "ascend";
+
+    public static String GLOBAL_USER_TOKEN = "GLOBAL_USER_TOKEN";
 
 }

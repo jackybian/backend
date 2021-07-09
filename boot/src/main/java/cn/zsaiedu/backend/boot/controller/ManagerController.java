@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,12 +38,6 @@ public class ManagerController {
     @Resource
     private StringRedisTemplate stringRedisTemplate;
 
-    @PostMapping("/token")
-    @ApiOperation(value = "获取token")
-    public TokenVo getToken() {
-        TokenVo tokenVo = managerService.getToken();
-        return tokenVo;
-    }
 
     @PostMapping("/address")
     @ApiOperation(value = "获取地址")
@@ -64,23 +59,27 @@ public class ManagerController {
     @ApiOperation(value = "获取收费信息", notes = "获取收费")
     public ExamCostVo examCost(@Valid @RequestBody CostQueryDataBo costQueryDataBo) {
         //TODO 检查userToken
-        ExamCostVo examCostVo = managerService.getCost(costQueryDataBo.getCostBoList(), costQueryDataBo.getApplyProfession(),costQueryDataBo.getUserToken());
+        Cost cost = new Cost();
+        cost.setPhone(cost.getPhone());
+        List<Cost> costList = new ArrayList<>();
+        costList.add(cost);
+        ExamCostVo examCostVo = managerService.getCost(costList, costQueryDataBo.getApplyProfession(), "");
         return examCostVo;
     }
 
-    @PostMapping("/synchronization/progress")
-    @ApiOperation(value = "学习记录同步", notes = "学习记录同步")
-    public ExamCostVo synchronizationProgress(@Valid @RequestBody CostQueryDataBo costQueryDataBo) {
-        //TODO 检查userToken
-        ExamCostVo examCostVo = managerService.getCost(costQueryDataBo.getCostBoList(), costQueryDataBo.getApplyProfession(),costQueryDataBo.getUserToken());
-        return examCostVo;
-    }
+//    @PostMapping("/synchronization/progress")
+//    @ApiOperation(value = "学习记录同步", notes = "学习记录同步")
+//    public ExamCostVo synchronizationProgress(@Valid @RequestBody CostQueryDataBo costQueryDataBo) {
+//        //TODO 检查userToken
+//        ExamCostVo examCostVo = managerService.getCost(costQueryDataBo.getCostBoList(), costQueryDataBo.getApplyProfession(), costQueryDataBo.getUserToken());
+//        return examCostVo;
+//    }
 
     @PostMapping("/sync/progress")
     @ApiOperation(value = "学习记录同步", notes = "学习记录同步")
     public BasicVo syncProgress(@Valid @RequestBody CourseProgressBo courseProgressBo) {
         //TODO 检查userToken
-        BasicVo basicVo = managerService.syncProgress(courseProgressBo.getCourseInfo(), courseProgressBo.getPhone(),courseProgressBo.getApplyProfession(),courseProgressBo.getUserToken());
+        BasicVo basicVo = managerService.syncProgress(courseProgressBo.getCourseInfo(), courseProgressBo.getPhone(), courseProgressBo.getApplyProfession(), courseProgressBo.getUserToken());
         return basicVo;
     }
 
@@ -90,15 +89,21 @@ public class ManagerController {
     public UserInfoVo saveUsers(@Valid @RequestBody UserInfoBo userInfoBo) {
         //TODO 检查userToken
         UserInfoVo userInfoVo = managerService.saveUser(userInfoBo);
+        if (null != userInfoVo && 200 == userInfoVo.getStatus() && userInfoVo.getId() > 0) {
+            SyncBo syncBo = new SyncBo();
+            syncBo.setId(userInfoVo.getId());
+            UserInfoVo userInfoSync = managerService.syncUser(syncBo);
+            return userInfoSync;
+        }
         return userInfoVo;
     }
 
     @PostMapping("/user/sync")
     @ApiOperation(value = "同步用户信息", notes = "同步用户信息")
-    public BasicVo syncUsers(@Valid @RequestBody SyncBo syncBo) {
+    public UserInfoVo syncUsers(@Valid @RequestBody SyncBo syncBo) {
         //TODO 检查userToken
-        BasicVo basicVo = managerService.syncUser(syncBo);
-        return basicVo;
+        UserInfoVo userInfoVo = managerService.syncUser(syncBo);
+        return userInfoVo;
     }
 
     @PostMapping("/user/query")
@@ -117,7 +122,7 @@ public class ManagerController {
 
     @PostMapping("/user/delete/{id}")
     @ApiOperation(value = "删除用户信息", notes = "删除用户信息")
-    public BasicVo deleteUser(@PathVariable("id") Long id ) {
+    public BasicVo deleteUser(@PathVariable("id") Long id) {
         //TODO 检查userToken
         int result = userService.deleteUserById(id);
         BasicVo basicVo = new BasicVo();
@@ -126,7 +131,7 @@ public class ManagerController {
 
     @PostMapping("/user/update")
     @ApiOperation(value = "更新用户信息", notes = "更新用户信息")
-    public BasicVo updateUser(@Valid @RequestBody UserInfoBo userInfoBo ) {
+    public BasicVo updateUser(@Valid @RequestBody UserInfoBo userInfoBo) {
         //TODO 检查userToken
         int result = userService.updateUserById(userInfoBo);
         BasicVo basicVo = new BasicVo();
@@ -135,7 +140,7 @@ public class ManagerController {
 
     @PostMapping("/user/upload/idcard")
     @ApiOperation(value = "用户上传身份证", notes = "用户上传身份证")
-    public BasicVo uploadIdCard(@RequestParam MultipartFile file,  @RequestParam String fileName) {
+    public BasicVo uploadIdCard(@RequestParam MultipartFile file, @RequestParam String fileName) {
         //TODO 检查userToken
         boolean result = HuaweiUtil.upload2Obs(file, fileName);
         BasicVo basicVo = new BasicVo();
@@ -146,7 +151,8 @@ public class ManagerController {
         } else {
             basicVo.setMessage("success");
         }
+
         return basicVo;
     }
-    
+
 }

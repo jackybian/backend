@@ -13,13 +13,14 @@ import com.github.pagehelper.Page;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
-import static cn.zsaiedu.backend.boot.constants.Constants.APP_ID;
-import static cn.zsaiedu.backend.boot.constants.Constants.APP_SECRET;
+import static cn.zsaiedu.backend.boot.constants.Constants.*;
 
 @Slf4j
 @Service
@@ -27,6 +28,9 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public TokenVo getToken() {
@@ -63,7 +67,8 @@ public class ManagerServiceImpl implements ManagerService {
         Map<String, Object> requestData = new HashMap<>();
         requestData.put("phone", phone);
         requestData.put("applyProfession", applyProfession);
-        Map<String, Object> params = ParamUtil.getRequestParam(requestData, userToken);
+
+        Map<String, Object> params = ParamUtil.getRequestParam(requestData, getTokenByInternal());
         String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_EXAM_ADDRESS, JSON.toJSONString(params));
         AddressVo addressVo = new AddressVo();
         if (StringUtils.isEmpty(result)) {
@@ -101,7 +106,7 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public ExamLocationVo getLocation(List<ExamLocation> examLocationList, String userToken) {
 
-        Map<String, Object> params = ParamUtil.getRequestParam(examLocationList, userToken);
+        Map<String, Object> params = ParamUtil.getRequestParam(examLocationList, getTokenByInternal());
         String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_ALLOT_EXAM, JSON.toJSONString(params));
         ExamLocationVo examLocationVo = new ExamLocationVo();
         if (StringUtils.isEmpty(result)) {
@@ -140,7 +145,7 @@ public class ManagerServiceImpl implements ManagerService {
         Map<String, Object> requestData = new HashMap<>();
         requestData.put("applyProfession", applyProfession);
         requestData.put("student", costList);
-        Map<String, Object> params = ParamUtil.getRequestParam(requestData, userToken);
+        Map<String, Object> params = ParamUtil.getRequestParam(requestData, getTokenByInternal());
         String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_COST, JSON.toJSONString(params));
         ExamCostVo examCostVo = new ExamCostVo();
         if (StringUtils.isEmpty(result)) {
@@ -180,7 +185,7 @@ public class ManagerServiceImpl implements ManagerService {
         requestData.put("applyProfession", applyProfession);
         requestData.put("phone", phone);
         requestData.put("courseInfo", courseInfo);
-        Map<String, Object> params = ParamUtil.getRequestParam(requestData, userToken);
+        Map<String, Object> params = ParamUtil.getRequestParam(requestData, getTokenByInternal());
         String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_PROGRESS, JSON.toJSONString(params));
         BasicVo basicVo = new BasicVo();
         if (StringUtils.isEmpty(result)) {
@@ -215,8 +220,8 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public BasicVo syncUser(SyncBo syncBo) {
-        BasicVo basicVo = new BasicVo();
+    public UserInfoVo syncUser(SyncBo syncBo) {
+        UserInfoVo basicVo = new UserInfoVo();
         User user = userService.queryUserById(syncBo.getId());
         if (null == user) {
             basicVo.setStatus(500);
@@ -239,7 +244,7 @@ public class ManagerServiceImpl implements ManagerService {
             return basicVo;
         }
 
-        Map<String, Object> params = ParamUtil.getRequestParam(paramList, syncBo.getUserToken());
+        Map<String, Object> params = ParamUtil.getRequestParam(paramList, getTokenByInternal());
         String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_USER, JSON.toJSONString(params));
 
         if (StringUtils.isEmpty(result)) {
@@ -303,17 +308,22 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public String getTokenByInternal() {
-        String token = null;
+        String token = stringRedisTemplate.opsForValue().get(GLOBAL_USER_TOKEN);
+        if (StringUtils.isNotEmpty(token) && !"null".equals(token)) {
+            return token;
+        }
         Map<String, Object> params = ParamUtil.getRequestParam(new HashMap<String, Object>(), APP_ID, APP_SECRET);
         String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_TOKEN, JSON.toJSONString(params));
         try {
             JSONObject jsonObject = JSONObject.parseObject(result);
             token = jsonObject.getString("data");
+            stringRedisTemplate.opsForValue().set(GLOBAL_USER_TOKEN, token, 90, TimeUnit.MINUTES);
         } catch (Exception ex) {
             log.error("服务器获取token异常");
         }
         return token;
     }
+
 
 
 }

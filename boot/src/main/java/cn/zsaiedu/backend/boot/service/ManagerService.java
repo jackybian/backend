@@ -19,7 +19,7 @@ public interface ManagerService {
 
     BasicVo syncProgress(List<CourseProgress> courseInfo, String phone, String applyProfession, String userToken );
 
-    BasicVo syncUser(SyncBo syncBo);
+    UserInfoVo syncUser(SyncBo syncBo);
 
     UserInfoVo saveUser(UserInfoBo userInfoBo);
 

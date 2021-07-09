@@ -6,10 +6,8 @@ import java.util.List;
 @Data
 public class CostQueryDataBo {
 
-    private List<Cost> costBoList;
+    private String phone;
 
     private String applyProfession;
-
-    private String userToken;
 
 }
