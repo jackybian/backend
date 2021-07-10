@@ -60,7 +60,7 @@ public class ManagerController {
     public ExamCostVo examCost(@Valid @RequestBody CostQueryDataBo costQueryDataBo) {
         //TODO 检查userToken
         Cost cost = new Cost();
-        cost.setPhone(cost.getPhone());
+        cost.setPhone(costQueryDataBo.getPhone());
         List<Cost> costList = new ArrayList<>();
         costList.add(cost);
         ExamCostVo examCostVo = managerService.getCost(costList, costQueryDataBo.getApplyProfession(), "");
@@ -71,7 +71,7 @@ public class ManagerController {
     @ApiOperation(value = "学习记录同步", notes = "学习记录同步")
     public BasicVo syncProgress(@Valid @RequestBody CourseProgressBo courseProgressBo) {
         //TODO 检查userToken
-        BasicVo basicVo = managerService.syncProgress(courseProgressBo.getCourseInfo(), courseProgressBo.getPhone(), courseProgressBo.getApplyProfession(), courseProgressBo.getUserToken());
+        BasicVo basicVo = managerService.syncProgress(courseProgressBo.getCourseInfo(), courseProgressBo.getPhone(), courseProgressBo.getApplyProfession(), "");
         return basicVo;
     }
 

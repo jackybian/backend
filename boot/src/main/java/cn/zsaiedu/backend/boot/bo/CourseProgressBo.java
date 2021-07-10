@@ -12,6 +12,4 @@ public class CourseProgressBo {
     private String phone;
 
     private String applyProfession;
-
-    private String userToken;
 }

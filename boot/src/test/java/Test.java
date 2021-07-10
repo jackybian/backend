@@ -1,12 +1,9 @@
-import cn.zsaiedu.backend.boot.util.Base64Util;
-import cn.zsaiedu.backend.boot.util.HuaweiUtil;
-import sun.misc.BASE64Encoder;
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class Test {
     public static void main(String[] args) throws IOException {
+
+
         // 需要将endPoint/ak/sk更新为实际信息
 //        String endPoint = "obs.cn-east-3.myhuaweicloud.com";
 //        String ak = "FQJH6MC0ZVOPP62JELKN";
@@ -24,13 +21,13 @@ public class Test {
 //        }
 
         //HuaweiUtil.upload2Obs("E:/desktop.jpg", "desktop1");
-        byte[] bytes = HuaweiUtil.downloadObs("desktop1");
-        System.out.println(Base64Util.getBase64Code(bytes));
+//        byte[] bytes = HuaweiUtil.downloadObs("desktop1");
+//        System.out.println(Base64Util.getBase64Code(bytes));
 
 //        ObsObject obsObject = obsClient.getObject(bucketName, "desktop");
 //        InputStream content = obsObject.getObjectContent();
 //        System.out.println(obsObject.getMetadata().getContentLength());
-        ByteArrayOutputStream data = new ByteArrayOutputStream();
+//        ByteArrayOutputStream data = new ByteArrayOutputStream();
 //        try {
 //                int len = 0;
 //                byte[] buf = new byte[1024];
@@ -65,8 +62,8 @@ public class Test {
 //
 //        } catch (Exception ex) {
 //        }
-        BASE64Encoder encoder = new BASE64Encoder();
-        System.out.println(encoder.encode(data.toByteArray()));
+//        BASE64Encoder encoder = new BASE64Encoder();
+//        System.out.println(encoder.encode(data.toByteArray()));
 //        File file = new File("D:/midway_copy2.jpg");
 //        FileOutputStream fileOutputStream = new FileOutputStream(file);
 //        StringBuffer stringBuffer = new StringBuffer();
