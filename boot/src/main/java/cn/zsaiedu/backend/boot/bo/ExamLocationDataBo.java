@@ -9,6 +9,4 @@ public class ExamLocationDataBo {
 
     private List<ExamLocation> examLocationList;
 
-    private String userToken;
-
 }

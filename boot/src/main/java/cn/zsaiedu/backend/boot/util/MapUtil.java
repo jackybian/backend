@@ -1,7 +1,13 @@
 package cn.zsaiedu.backend.boot.util;
 
+import cn.zsaiedu.backend.boot.bo.ExamLocation;
+import cn.zsaiedu.backend.boot.bo.ExamLocationDataBo;
+import com.alibaba.fastjson.JSONObject;
+
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MapUtil {
@@ -43,6 +49,20 @@ public class MapUtil {
 //        courseProgressBo.setApplyProfession("0005");
 //
 //        System.out.println(JSONObject.toJSONString(courseProgressBo));
+
+        ExamLocationDataBo examLocationDataBo = new ExamLocationDataBo();
+        ExamLocation examLocation = new ExamLocation();
+        examLocation.setPhone("13656226805");
+        examLocation.setApplyProfession("0005");
+        examLocation.setProvince("江苏");
+        examLocation.setCity("苏州");
+        examLocation.setArea("园区");
+        examLocation.setExpectExamBeginTime("2021-06-10");
+        examLocation.setExpectExamEndTime("2021-06-10");
+        List<ExamLocation> examLocationList = new ArrayList<>();
+        examLocationList.add(examLocation);
+        examLocationDataBo.setExamLocationList(examLocationList);
+        System.out.println(JSONObject.toJSONString(examLocationDataBo));
     }
 
 }

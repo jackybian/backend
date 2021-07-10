@@ -39,7 +39,7 @@ public class ManagerController {
     private StringRedisTemplate stringRedisTemplate;
 
 
-    @PostMapping("/address")
+    @PostMapping("/exam/address")
     @ApiOperation(value = "获取地址")
     public AddressVo getAddress(@Valid @RequestBody AddressBo addressBo) {
         //TODO 检查userToken
@@ -51,7 +51,7 @@ public class ManagerController {
     @ApiOperation(value = "获取考点", notes = "获取考点")
     public ExamLocationVo examLocation(@Valid @RequestBody ExamLocationDataBo examLocationDataBo) {
         //TODO 检查userToken
-        ExamLocationVo examLocationVo = managerService.getLocation(examLocationDataBo.getExamLocationList(), examLocationDataBo.getUserToken());
+        ExamLocationVo examLocationVo = managerService.getLocation(examLocationDataBo.getExamLocationList(), "");
         return examLocationVo;
     }
 

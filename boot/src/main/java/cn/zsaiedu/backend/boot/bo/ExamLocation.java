@@ -15,7 +15,7 @@ public class ExamLocation {
 
     private String area;
 
-    private String expectExamStarTime;
+    private String expectExamBeginTime;
 
     private String expectExamEndTime;
 }
