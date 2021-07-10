@@ -67,4 +67,13 @@ public interface UserMapper {
             "where id=#{id} "
             )
     User queryUserById(@Param("id") Long id);
+
+    @Select(
+            "select `name`,`sex`,`id_card`,`phone`,`id_card_img`," +
+                    "`age`,`standard_culture`,`province`,`city`,`area`," +
+                    "`address`,`student_type`,`apply_profession` from user " +
+                    "where phone=#{phone} "
+    )
+    User queryUserByPhone(@Param("phone") String phone);
+
 }

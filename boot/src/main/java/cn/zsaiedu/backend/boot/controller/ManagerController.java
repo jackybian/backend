@@ -67,14 +67,6 @@ public class ManagerController {
         return examCostVo;
     }
 
-//    @PostMapping("/synchronization/progress")
-//    @ApiOperation(value = "学习记录同步", notes = "学习记录同步")
-//    public ExamCostVo synchronizationProgress(@Valid @RequestBody CostQueryDataBo costQueryDataBo) {
-//        //TODO 检查userToken
-//        ExamCostVo examCostVo = managerService.getCost(costQueryDataBo.getCostBoList(), costQueryDataBo.getApplyProfession(), costQueryDataBo.getUserToken());
-//        return examCostVo;
-//    }
-
     @PostMapping("/sync/progress")
     @ApiOperation(value = "学习记录同步", notes = "学习记录同步")
     public BasicVo syncProgress(@Valid @RequestBody CourseProgressBo courseProgressBo) {
@@ -151,7 +143,6 @@ public class ManagerController {
         } else {
             basicVo.setMessage("success");
         }
-
         return basicVo;
     }
 

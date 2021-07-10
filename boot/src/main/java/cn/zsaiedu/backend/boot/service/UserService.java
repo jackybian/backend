@@ -17,4 +17,6 @@ public interface UserService {
     int updateUserById(User user);
 
     User queryUserById(Long id);
+
+    User queryUserByPhone(String phone);
 }
