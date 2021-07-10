@@ -85,6 +85,7 @@ public class ManagerController {
             SyncBo syncBo = new SyncBo();
             syncBo.setId(userInfoVo.getId());
             UserInfoVo userInfoSync = managerService.syncUser(syncBo);
+            userInfoSync.setId(userInfoVo.getId());
             return userInfoSync;
         }
         return userInfoVo;
