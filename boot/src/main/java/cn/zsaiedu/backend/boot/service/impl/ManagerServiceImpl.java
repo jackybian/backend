@@ -220,8 +220,8 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public UserInfoVo syncUser(List<Long> ids) {
-        UserInfoVo basicVo = new UserInfoVo();
+    public BasicVo syncUser(List<Long> ids) {
+        BasicVo basicVo = new BasicVo();
         List<User> userList = userService.queryUserByIds(ids);
         if (null == userList) {
             basicVo.setStatus(500);
