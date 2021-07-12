@@ -20,7 +20,7 @@ public interface UserMapper {
 
 
     @Select({"<script>" +
-            "select `name`,`sex`,`id_card`,`phone`,`id_card_img`," +
+            "select `id`,`name`,`sex`,`id_card`,`phone`,`id_card_img`," +
             "`age`,`standard_culture`,`province`,`city`,`area`," +
             "`address`,`student_type`,`apply_profession`, `sync_flag` from user " +
             "where 1 = 1 "  +
