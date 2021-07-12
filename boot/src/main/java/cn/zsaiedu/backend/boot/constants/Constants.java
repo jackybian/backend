@@ -41,4 +41,6 @@ public class Constants {
 
     public static String GLOBAL_USER_TOKEN = "GLOBAL_USER_TOKEN";
 
+    public static String APPLY_PROFESSION = "0005";
+
 }

@@ -2,6 +2,8 @@ package cn.zsaiedu.backend.boot.entity;
 
 import lombok.Data;
 
+import static cn.zsaiedu.backend.boot.constants.Constants.APPLY_PROFESSION;
+
 @Data
 public class User {
 
@@ -31,6 +33,13 @@ public class User {
 
     private Integer studentType;
 
-    private String applyProfession;
+    private String applyProfession = APPLY_PROFESSION;
 
+    public String getApplyProfession() {
+        return APPLY_PROFESSION;
+    }
+
+    public void setApplyProfession(String applyProfession) {
+        this.applyProfession = APPLY_PROFESSION;
+    }
 }
