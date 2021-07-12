@@ -35,6 +35,8 @@ public class User {
 
     private String applyProfession = APPLY_PROFESSION;
 
+    private boolean syncFlag;
+
     public String getApplyProfession() {
         return APPLY_PROFESSION;
     }

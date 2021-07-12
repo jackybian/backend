@@ -220,29 +220,34 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public UserInfoVo syncUser(SyncBo syncBo) {
+    public UserInfoVo syncUser(List<Long> ids) {
         UserInfoVo basicVo = new UserInfoVo();
-        User user = userService.queryUserById(syncBo.getId());
-        if (null == user) {
+        List<User> userList = userService.queryUserByIds(ids);
+        if (null == userList) {
             basicVo.setStatus(500);
             basicVo.setErrorMessage("id对应的记录不存在");
             return basicVo;
         }
-        Map<String, Object> param = null;
+
         List<Map<String, Object>> paramList = new ArrayList<>();
-        try {
-            param = MapUtil.objectToMap(user);
-            byte[] bytes = HuaweiUtil.downloadObs(user.getIdcardImg());
-            String baseData = Base64Util.getBase64Code(bytes);
-            StringBuilder sb = new StringBuilder();
-            sb.append("data:image/jpg;base64,").append(baseData);
-            param.put("idcardImg", sb.toString());
-            paramList.add(param);
-        } catch (Exception ex) {
-            basicVo.setStatus(500);
-            basicVo.setErrorMessage("id对应的记录不存在");
-            return basicVo;
-        }
+        HashMap<String, Long> users = new HashMap<>();
+        userList.forEach(item->{
+            try {
+                Map<String, Object> param = null;
+                param = MapUtil.objectToMap(item);
+                byte[] bytes = HuaweiUtil.downloadObs(item.getIdcardImg());
+                String baseData = Base64Util.getBase64Code(bytes);
+                StringBuilder sb = new StringBuilder();
+                sb.append("data:image/jpg;base64,").append(baseData);
+                param.put("idcardImg", sb.toString());
+                users.put(item.getPhone(), item.getId());
+                paramList.add(param);
+            } catch (Exception ex) {
+            }
+        });
+
+
+
 
         Map<String, Object> params = ParamUtil.getRequestParam(paramList, getTokenByInternal());
         String result = HttpUtil.sendPost(Constants.QGJY_SERVER_URL_SYNC_USER, JSON.toJSONString(params));
@@ -257,15 +262,41 @@ public class ManagerServiceImpl implements ManagerService {
                 // 对接文档写的不详细，暂时按照非200，就是全部失败
                 if (!"200".equals(code)) {
                     basicVo.setStatus(500);
-                    basicVo.setErrorMessage(jsonObject.getString("msg"));
+                    basicVo.setMessage(jsonObject.getString("msg"));
+                    if (StringUtils.isNotEmpty(jsonObject.getString("data"))) {
+                        Map<String, Object> jsonData = JSONObject.parseObject(jsonObject.getString("data"), Map.class);
+                        if (null != jsonData) {
+                            jsonData.forEach((k,v)->{
+                                if (users.containsKey(k)) {
+                                    users.remove(k);
+                                }
+                            });
+                        }
+                    }
+
                 } else {
                     String data = jsonObject.getString("data");
                     if (StringUtils.isEmpty(data)) {
                         basicVo.setStatus(500);
                         basicVo.setErrorMessage("服务器返回数据为空");
                     } else {
-                        Map<String, Object> jsonData = JSONObject.parseObject(result, Map.class);
-//                        basicVo.setExamCost(jsonData);
+                        basicVo.setMessage(jsonObject.getString("msg"));
+                        Map<String, Object> jsonData = JSONObject.parseObject(jsonObject.getString("data"), Map.class);
+                        if (null != jsonData) {
+                            jsonData.forEach((k,v)->{
+                                if (users.containsKey(k)) {
+                                    users.remove(k);
+                                }
+                            });
+                            if (users.size() > 0) {
+                                List<Long> idsOfSuccess = new ArrayList<>();
+                                users.forEach((k,v)->{
+                                    idsOfSuccess.add(v);
+                                });
+                                userService.updateUserByIds(idsOfSuccess);
+                            }
+
+                        }
                     }
                 }
 

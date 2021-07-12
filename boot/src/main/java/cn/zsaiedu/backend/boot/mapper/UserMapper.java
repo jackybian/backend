@@ -22,7 +22,7 @@ public interface UserMapper {
     @Select({"<script>" +
             "select `name`,`sex`,`id_card`,`phone`,`id_card_img`," +
             "`age`,`standard_culture`,`province`,`city`,`area`," +
-            "`address`,`student_type`,`apply_profession` from user " +
+            "`address`,`student_type`,`apply_profession`, `sync_flag` from user " +
             "where 1 = 1 "  +
             " <when test='idCard!=null'> " +
             " AND id_card = #{idCard} " +
@@ -63,7 +63,7 @@ public interface UserMapper {
     @Select(
             "select `name`,`sex`,`id_card`,`phone`,`id_card_img`," +
             "`age`,`standard_culture`,`province`,`city`,`area`," +
-            "`address`,`student_type`,`apply_profession` from user " +
+            "`address`,`student_type`,`apply_profession`,`sync_flag` from user " +
             "where id=#{id} "
             )
     User queryUserById(@Param("id") Long id);
@@ -71,9 +71,35 @@ public interface UserMapper {
     @Select(
             "select `name`,`sex`,`id_card`,`phone`,`id_card_img`," +
                     "`age`,`standard_culture`,`province`,`city`,`area`," +
-                    "`address`,`student_type`,`apply_profession` from user " +
+                    "`address`,`student_type`,`apply_profession`,`sync_flag` from user " +
                     "where phone=#{phone} "
     )
     User queryUserByPhone(@Param("phone") String phone);
+
+    @Select({"<script>" +
+            "select `id`,`name`,`sex`,`id_card`,`phone`,`id_card_img`," +
+                    "`age`,`standard_culture`,`province`,`city`,`area`," +
+                    "`address`,`student_type`,`apply_profession`,`sync_flag` from user " +
+                    "where id in "+
+                    "<foreach item=\"item\" index=\"index\" collection=\"ids\" open=\"(\" separator=\",\" close=\")\">\n" +
+                    "#{item}" +
+                    "</foreach>"+
+            "</script>"}
+    )
+    List<User> queryUserByIds(@Param("ids") List<Long> ids);
+
+
+    @Update("<script>" +
+            "update user " +
+            "<set> " +
+            "sync_flag = true" +
+            "</set>" +
+            "where id in "+
+            "<foreach item=\"item\" index=\"index\" collection=\"ids\" open=\"(\" separator=\",\" close=\")\">\n" +
+            "#{item}" +
+            "</foreach>"+
+            "</script>"
+    )
+    int updateUserByIds(@Param("ids") List<Long> ids);
 
 }

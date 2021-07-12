@@ -19,4 +19,8 @@ public interface UserService {
     User queryUserById(Long id);
 
     User queryUserByPhone(String phone);
+
+    List<User> queryUserByIds(List<Long> ids);
+
+    int updateUserByIds(List<Long> ids);
 }

@@ -50,5 +50,14 @@ public class UserServiceImpl implements UserService {
         return userMapper.queryUserByPhone(phone);
     }
 
+    @Override
+    public List<User> queryUserByIds(List<Long> ids) {
+        return userMapper.queryUserByIds(ids);
+    }
+
+    @Override
+    public int updateUserByIds(List<Long> ids) {
+        return userMapper.updateUserByIds(ids);
+    }
 
 }

@@ -81,21 +81,14 @@ public class ManagerController {
     public UserInfoVo saveUsers(@Valid @RequestBody UserInfoBo userInfoBo) {
         //TODO 检查userToken
         UserInfoVo userInfoVo = managerService.saveUser(userInfoBo);
-        if (null != userInfoVo && 200 == userInfoVo.getStatus() && userInfoVo.getId() > 0) {
-            SyncBo syncBo = new SyncBo();
-            syncBo.setId(userInfoVo.getId());
-            UserInfoVo userInfoSync = managerService.syncUser(syncBo);
-            userInfoSync.setId(userInfoVo.getId());
-            return userInfoSync;
-        }
         return userInfoVo;
     }
 
     @PostMapping("/user/sync")
     @ApiOperation(value = "同步用户信息", notes = "同步用户信息")
-    public UserInfoVo syncUsers(@Valid @RequestBody SyncBo syncBo) {
+    public BasicVo syncUsers(@Valid @RequestBody List<Long> ids) {
         //TODO 检查userToken
-        UserInfoVo userInfoVo = managerService.syncUser(syncBo);
+        BasicVo userInfoVo = managerService.syncUser(ids);
         return userInfoVo;
     }
 
